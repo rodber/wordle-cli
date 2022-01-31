@@ -18,6 +18,8 @@
 
 ```
 
+https://user-images.githubusercontent.com/20590102/151889072-ff1ef963-e18c-4554-a5f6-edeed50343ec.mp4
+
 This is a Wordle CLI game (remix). Currently it only works in Spanish.
 
 ## ✨ Run with Docker
