@@ -1,0 +1,116 @@
+#!/usr/bin/env php
+<?php
+
+/*
+ * This file is part of Chevere.
+ *
+ * (c) Rodolfo Berrios <rodolfo@chevere.org>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
+declare(strict_types=1);
+
+use function Chevere\Filesystem\filePhpReturnForPath;
+use Chevere\Wordle\Compare;
+use Chevere\Wordle\Word;
+use League\CLImate\CLImate;
+
+require_once __DIR__ . '/vendor/autoload.php';
+
+$climate = new CLImate();
+$climate->clear();
+$climate->addArt(__DIR__ . '/app/animations');
+$climate->animation('intro')->speed(200)->enterFrom('top');
+$options = range(3, 8);
+$input = $climate->input('<green>* Seleccionar largo palabra [3, 8] (premeditado 5):</green>');
+$input->defaultTo('5');
+$input->accept($options);
+$wordLength = intval($input->prompt());
+$input = $climate->input('<green>* Intentos? [0, n] (premeditado 6, sin limite 0):</green>');
+$input->defaultTo('6');
+$ansTries = intval($input->prompt());
+$attempts = $ansTries === 0
+    ? '∞'
+    : $ansTries;
+$wordListFile = filePhpReturnForPath(__DIR__ . '/app/wordlist/es/' . $wordLength . '.php');
+$wordList = $wordListFile->var();
+$randomWord = strtoupper($wordList[rand(0, count($wordList))]);
+$word = new Word($randomWord);
+$climate->br()->out(
+    strtr(
+        '🔍 Palabra de <invert> %length% </invert> caracteres.',
+        [
+            '%length%' => $wordLength,
+        ]
+    )
+)->br();
+$emojiLines = [];
+$answers = [];
+$try = 0;
+do {
+    $input = $climate->input(
+        strtr('❯ Intento %try/%attempts:', [
+            '%try' => strval($try + 1),
+            '%attempts' => $attempts,
+        ])
+    );
+    $ansTries = $input->prompt();
+    if(strlen($ansTries) === 0) {
+        $noMatch = true;
+        $climate->error(
+            sprintf('La palabra debe tener exactamente %s caracteres.', $word->length())
+        );
+
+        continue;
+    }
+    $attemptUpper = mb_strtoupper($ansTries);
+    $attemptLower = mb_strtolower($ansTries);
+    $against = new Word($attemptUpper);
+    if ($against->length() !== $word->length()) {
+        $noMatch = true;
+        $climate->error(
+            sprintf('La palabra debe tener exactamente %s caracteres.', $word->length())
+        );
+
+        continue;
+    }
+    if (!in_array($attemptLower, $wordList)) {
+        $noMatch = true;
+        $climate->error('La palabra no está en la lista.');
+
+        continue;
+    }
+    $answers[] = $attemptUpper;
+    $compare = new Compare($word, $against);
+    $noMatch = !$compare->match();
+    $explain = [];
+    $emoji = '';
+    foreach ($against->split() as $pos => $letter) {
+        $match = $compare->computed()[$pos][$letter];
+        $color = '' . match ($match) {
+            Word::CHAR_MATCH_EXACT => 'green',
+            Word::CHAR_MATCH_PARTIAL => 'light_yellow',
+            Word::CHAR_MATCH_NONE => 'dark_gray',
+        };
+        $explain[] = "<invert><$color> $letter </$color></invert>";
+        $emoji .= match ($match) {
+            Word::CHAR_MATCH_EXACT => '🟩',
+            Word::CHAR_MATCH_PARTIAL => '🟨',
+            Word::CHAR_MATCH_NONE => '⬜',
+        };
+    }
+    $emojiLines[] = $emoji;
+    $explain[] = ' <invert><green>(' . $compare->fraction() . ')</green></invert>';
+    $climate->out(implode('', $explain));
+    $try++;
+} while ($noMatch && ($attempts !== '∞' && $try < $attempts));
+$climate->animation($noMatch ? 'lose' : 'win')->enterFrom('bottom');
+$endgame = strtr('%icon% Fin del juego (%tries% intentos) 🔍 %word%', [
+    '%tries%' => $try,
+    '%icon%' => $noMatch ? '😭' : '🎉',
+    '%word%' => $randomWord,
+]);
+$climate->flank($endgame, '*', 3);
+$climate->br()->out(implode("\n", $emojiLines));

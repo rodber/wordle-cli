@@ -1,0 +1,40 @@
+#!/usr/bin/env php
+<?php
+
+/*
+ * This file is part of Chevere.
+ *
+ * (c) Rodolfo Berrios <rodolfo@chevere.org>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
+declare(strict_types=1);
+
+use function Chevere\Filesystem\fileForPath;
+use function Chevere\Writer\streamFor;
+
+require_once __DIR__ . '/vendor/autoload.php';
+
+$words = file_get_contents(__DIR__ . '/app/wordlist/es.json');
+$words = json_decode($words, true);
+$collect = range(3, 8);
+$writers = [];
+foreach ($collect as $size) {
+    $file = fileForPath(__DIR__ . '/app/wordlist/es/' . $size . '.php');
+    $file->removeIfExists();
+    $file->create();
+    $writer = streamFor($file->path()->__toString(), 'w');
+    $writer->write('<?php return [' . PHP_EOL);
+    $writers[$size] = $writer;
+}
+foreach ($words as $word) {
+    $length = mb_strlen($word);
+    if (in_array($length, $collect)) {
+        $writers[$length]->write("'" . $word . "',");
+    }
+}
+foreach ($collect as $size) {
+    $writers[$size]->write('];');
+}

@@ -1,0 +1,13 @@
+/.ecs export-ignore
+/.github export-ignore
+/.vscode export-ignore
+/tests export-ignore
+/.dockerignore export-ignore
+/.gitattributes export-ignore
+/.gitignore export-ignore
+/docker-bake.hcl export-ignore
+/Dockerfile export-ignore
+/phpunit-report.xml export-ignore
+/phpunit.xml export-ignore
+
+*.php diff=php
