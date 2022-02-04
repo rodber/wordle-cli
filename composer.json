@@ -9,7 +9,7 @@
     ],
     "require": {
         "php": ">=8.0",
-        "chevere/chevere": "^0.1.x-dev",
+        "chevere/chevere": "^0.2",
         "league/climate": "^3.8"
     },
     "require-dev": {
