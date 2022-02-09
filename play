@@ -13,28 +13,41 @@
 declare(strict_types=1);
 
 use function Chevere\Filesystem\filePhpReturnForPath;
-use Chevere\Wordle\Compare;
-use Chevere\Wordle\Word;
+use Rodber\Wordle\Compare;
+use Rodber\Wordle\Word;
 use League\CLImate\CLImate;
 
 require_once __DIR__ . '/vendor/autoload.php';
 
 $climate = new CLImate();
 $climate->clear();
-$climate->addArt(__DIR__ . '/app/animations');
+$climate->addArt(__DIR__ . '/app/banner');
 $climate->animation('intro')->speed(200)->enterFrom('top');
+
+$options  = [
+    'en' => 'English',
+    'es' => 'Español',
+    'pt' => 'Português'
+];
+$input    = $climate->radio('Hello Hola Olá:', $options);
+$lang = $input->prompt();
+
+$climate->addArt(__DIR__ . "/app/lang/$lang/banner");
+
 $options = range(3, 8);
 $input = $climate->input('<green>* Seleccionar largo palabra [3, 8] (premeditado 5):</green>');
 $input->defaultTo('5');
 $input->accept($options);
 $wordLength = intval($input->prompt());
+
 $input = $climate->input('<green>* Intentos? [0, n] (premeditado 6, sin limite 0):</green>');
 $input->defaultTo('6');
 $ansTries = intval($input->prompt());
 $attempts = $ansTries === 0
     ? '∞'
     : $ansTries;
-$wordListFile = filePhpReturnForPath(__DIR__ . '/app/wordlist/es/' . $wordLength . '.php');
+
+$wordListFile = filePhpReturnForPath(__DIR__ . "/app/lang/$lang/words/$wordLength.php");
 $wordList = $wordListFile->var();
 $randomWord = strtoupper($wordList[rand(0, count($wordList))]);
 $word = new Word($randomWord);

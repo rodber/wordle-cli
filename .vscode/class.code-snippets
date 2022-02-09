@@ -1,28 +1,11 @@
 {
-    "interface": {
-        "description": "Create a interface",
-        "prefix": "interface",
-        "body": [
-            "<?php",
-            "",
-            "namespace ${TM_DIRECTORY/.*src\\/(([^\\/]*)(\\/)?)|(\\/)([^\\/]*)/$2${3:+\\\\}${5:+\\\\}$5/g};",
-            "",
-            "/**",
-            " * Describes the component in charge of ${1:doing}.",
-            " */",
-            "interface $TM_FILENAME_BASE",
-            "{",
-            "\t$0",
-            "}"
-        ]
-    },
     "class": {
         "description": "Create a class",
         "prefix": "class",
         "body": [
             "<?php",
             "",
-            "namespace ${TM_DIRECTORY/.*src\\/(([^\\/]*)(\\/)?)|(\\/)([^\\/]*)/$2${3:+\\\\}${5:+\\\\}$5/g};",
+            "namespace Rodber\\Wordle;",
             "",
             "final class $TM_FILENAME_BASE",
             "{",
@@ -35,7 +18,7 @@
         "prefix": "trait",
         "body": [
             "<?php",
-            "namespace ${TM_DIRECTORY/.*src\\/(([^\\/]*)(\\/)?)|(\\/)([^\\/]*)/$2${3:+\\\\}${5:+\\\\}$5/g};",
+            "namespace Rodber\\Wordle\\Traits;",
             "",
             "trait $TM_FILENAME_BASE",
             "{",
