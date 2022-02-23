@@ -49,7 +49,7 @@ $attempts = $ansTries === 0
 
 $wordListFile = filePhpReturnForPath(__DIR__ . "/app/lang/$lang/words/$wordLength.php");
 $wordList = $wordListFile->var();
-$randomWord = strtoupper($wordList[rand(0, count($wordList))]);
+$randomWord = mb_strtoupper($wordList[rand(0, count($wordList))]);
 $word = new Word($randomWord);
 $climate->br()->out(
     strtr(

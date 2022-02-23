@@ -14,9 +14,9 @@ declare(strict_types=1);
 namespace Rodber\Wordle\Tests;
 
 use Chevere\Throwable\Exceptions\LengthException;
-use Chevere\Wordle\Compare;
-use Chevere\Wordle\Word;
 use PHPUnit\Framework\TestCase;
+use Rodber\Wordle\Compare;
+use Rodber\Wordle\Word;
 
 final class CompareTest extends TestCase
 {

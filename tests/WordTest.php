@@ -13,8 +13,8 @@ declare(strict_types=1);
 
 namespace Rodber\Wordle\Tests;
 
-use Chevere\Wordle\Word;
 use PHPUnit\Framework\TestCase;
+use Rodber\Wordle\Word;
 
 final class WordTest extends TestCase
 {
