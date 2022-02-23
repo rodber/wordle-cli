@@ -9,13 +9,13 @@
     ],
     "require": {
         "php": ">=8.0",
-        "chevere/chevere": "^0.3",
+        "chevere/chevere": "~0.5 || ^0.5.x-dev",
         "league/climate": "^3.8"
     },
     "require-dev": {
         "phpunit/phpunit": "^9.5",
-        "symplify/easy-coding-standard": "^10.0",
-        "chevere/xr": "^0.1.3"
+        "symplify/easy-coding-standard": "^10.1",
+        "chevere/xr": "^0.2"
     },
     "autoload": {
         "psr-4": {
