@@ -35,12 +35,12 @@ $lang = $input->prompt();
 $climate->addArt(__DIR__ . "/app/lang/$lang/banner");
 
 $options = range(3, 8);
-$input = $climate->input('<green>* Seleccionar largo palabra [3, 8] (premeditado 5):</green>');
+$input = $climate->input('<green>* Select word length [3, 8] (default 5):</green>');
 $input->defaultTo('5');
 $input->accept($options);
 $wordLength = intval($input->prompt());
 
-$input = $climate->input('<green>* Intentos? [0, n] (premeditado 6, sin limite 0):</green>');
+$input = $climate->input('<green>* Responses? [0, n] (default 6, no limit 0):</green>');
 $input->defaultTo('6');
 $ansTries = intval($input->prompt());
 $attempts = $ansTries === 0
@@ -53,7 +53,7 @@ $randomWord = mb_strtoupper($wordList[rand(0, count($wordList))]);
 $word = new Word($randomWord);
 $climate->br()->out(
     strtr(
-        '🔍 Palabra de <invert> %length% </invert> caracteres.',
+        '🔍 Wordle <invert> %length% </invert> char word:',
         [
             '%length%' => $wordLength,
         ]
@@ -64,7 +64,7 @@ $answers = [];
 $try = 0;
 do {
     $input = $climate->input(
-        strtr('❯ Intento %try/%attempts:', [
+        strtr('❯ Try %try/%attempts:', [
             '%try' => strval($try + 1),
             '%attempts' => $attempts,
         ])
@@ -73,7 +73,7 @@ do {
     if(strlen($ansTries) === 0) {
         $noMatch = true;
         $climate->error(
-            sprintf('La palabra debe tener exactamente %s caracteres.', $word->length())
+            sprintf('Word must be %s length.', $word->length())
         );
 
         continue;
@@ -84,14 +84,14 @@ do {
     if ($against->length() !== $word->length()) {
         $noMatch = true;
         $climate->error(
-            sprintf('La palabra debe tener exactamente %s caracteres.', $word->length())
+            sprintf('Word must be %s length.', $word->length())
         );
 
         continue;
     }
     if (!in_array($attemptLower, $wordList)) {
         $noMatch = true;
-        $climate->error('La palabra no está en la lista.');
+        $climate->error('Word not in wordlist.');
 
         continue;
     }
@@ -120,7 +120,7 @@ do {
     $try++;
 } while ($noMatch && ($attempts !== '∞' && $try < $attempts));
 $climate->animation($noMatch ? 'lose' : 'win')->enterFrom('bottom');
-$endgame = strtr('%icon% Fin del juego (%tries% intentos) 🔍 %word%', [
+$endgame = strtr('%icon% GAME OVER (%tries% tries) 🔍 %word%', [
     '%tries%' => $try,
     '%icon%' => $noMatch ? '😭' : '🎉',
     '%word%' => $randomWord,

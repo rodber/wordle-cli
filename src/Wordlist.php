@@ -51,6 +51,7 @@ final class Wordlist
         $this->openFile();
         while (($line = fgets($this->fopen)) !== false) {
             $line = trim($line);
+            $line = preg_replace('~&([a-z]{1,2})(acute|cedil|circ|grave|lig|orn|ring|slash|th|tilde|uml);~i', '$1', htmlentities($line, ENT_QUOTES, 'UTF-8'));
             $length = mb_strlen($line);
             if (in_array($length, $collect)) {
                 $writers[$length]->write("'" . $line . "',");
