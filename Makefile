@@ -1,5 +1,11 @@
-build:
-	build-words
+run:
+	docker run -it --rm --init --name rodber-wordle-cli ghcr.io/rodber/wordle-cli ./play
+
+rm:
+	docker container rm rodber-wordle-cli -f
+
+image:
+	docker build -t ghcr.io/rodber/wordle-cli:latest .
 
 download-words:
 	curl -o wordlist/en https://raw.githubusercontent.com/dwyl/english-words/master/words_alpha.txt

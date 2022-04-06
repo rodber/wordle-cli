@@ -4,9 +4,13 @@
 
 https://user-images.githubusercontent.com/20590102/151889072-ff1ef963-e18c-4554-a5f6-edeed50343ec.mp4
 
-This is a Wordle CLI game (remix). Currently it only works in Spanish.
+This is a Wordle CLI game (remix) for English, Portuguese and Spanish.
 
 ## ✨ Run with Docker
+
+```sh
+make run
+```
 
 ```sh
 docker run -it --rm --init --name rodber-wordle-cli ghcr.io/rodber/wordle-cli ./play
@@ -15,10 +19,18 @@ docker run -it --rm --init --name rodber-wordle-cli ghcr.io/rodber/wordle-cli ./
 ## Remove
 
 ```sh
+make rm
+```
+
+```sh
 docker container rm rodber-wordle-cli -f
 ```
 
 ## Build
+
+```sh
+make image
+```
 
 ```sh
 docker build -t ghcr.io/rodber/wordle-cli:latest .
