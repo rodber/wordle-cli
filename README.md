@@ -15,6 +15,8 @@ This is a Wordle CLI remix game:
 * Get the latest binary from the [releases page](https://github.com/rodber/wordle-cli/releases/)
 * Run `wordle-cli` from your terminal
 
+Windows users can run `wsl ./wordle-cli` from the Windows terminal.
+
 ## Run using Docker
 
 ```sh
