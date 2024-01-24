@@ -10,49 +10,31 @@ This is a Wordle CLI remix game:
 * Choose word length (3, 8)
 * Determine number of allowed responses (default 6)
 
-## ✨ Run with Docker
+## Run using Docker
 
 ```sh
-make run
+docker run -it --rm --init --name rodber-wordle-cli ghcr.io/rodber/wordle-cli ./wordle-cli
 ```
 
-```sh
-docker run -it --rm --init --name rodber-wordle-cli ghcr.io/rodber/wordle-cli ./play
-```
-
-## Remove
-
-```sh
-make rm
-```
-
-```sh
-docker container rm rodber-wordle-cli -f
-```
-
-## Build
-
-```sh
-make image
-```
+### Build Docker image
 
 ```sh
 docker build -t ghcr.io/rodber/wordle-cli:latest .
 ```
 
-## 🐘 Run with php
+## Run from source
 
 ```php
 composer install
 ```
 
 ```php
-php play
+./wordle-cli
 ```
 
 ## License
 
-Copyright 2022 [Rodolfo Berrios A.](https://rodolfoberrios.com/)
+Copyright [Rodolfo Berrios A.](https://rodolfoberrios.com/)
 
 This project is licensed under the Apache License, Version 2.0. See [LICENSE](LICENSE) for the full license text.
 

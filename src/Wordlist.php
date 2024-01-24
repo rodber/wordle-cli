@@ -16,8 +16,8 @@ namespace Rodber\Wordle;
 use Chevere\Filesystem\File;
 use Chevere\Filesystem\Interfaces\DirInterface;
 use Chevere\Filesystem\Interfaces\FileInterface;
-use function Chevere\Message\message;
 use Chevere\Throwable\Exceptions\RuntimeException;
+use function Chevere\Message\message;
 use function Chevere\Writer\streamFor;
 
 final class Wordlist
@@ -25,9 +25,10 @@ final class Wordlist
     private $fopen;
 
     private string $lang;
-    
-    public function __construct(private FileInterface $file)
-    {
+
+    public function __construct(
+        private FileInterface $file
+    ) {
         $this->openFile();
         $this->lang = basename($file->path()->__toString());
     }
@@ -41,7 +42,7 @@ final class Wordlist
         $collect = range($min, $max);
         $writers = [];
         foreach ($collect as $size) {
-            $file = new File($dir->path()->getChild("$size.php"));
+            $file = new File($dir->path()->getChild("{$size}.php"));
             $file->removeIfExists();
             $file->create();
             $writer = streamFor($file->path()->__toString(), 'w');
@@ -53,7 +54,7 @@ final class Wordlist
             $line = trim($line);
             $line = preg_replace('~&([a-z]{1,2})(acute|cedil|circ|grave|lig|orn|ring|slash|th|tilde|uml);~i', '$1', htmlentities($line, ENT_QUOTES, 'UTF-8'));
             $length = mb_strlen($line);
-            if (in_array($length, $collect)) {
+            if (in_array($length, $collect, true)) {
                 $writers[$length]->write("'" . $line . "',");
                 $countWords++;
             }
@@ -62,17 +63,19 @@ final class Wordlist
             $writers[$size]->write('];');
         }
         $countedWords = number_format($countWords);
-        echo " ✅ $countedWords words\n";
+        echo " ✅ {$countedWords} words\n";
 
         fclose($this->fopen);
     }
 
     private function openFile(): void
     {
-        $this->fopen = fopen($this->file->path()->__toString(), "r");
-        if (!$this->fopen) {
+        $this->fopen = fopen($this->file->path()->__toString(), 'r');
+        if (! $this->fopen) {
             throw new RuntimeException(
-                message: message('Could not open file %file%', ['%file%' => $this->file->path()->__toString()])
+                message: message('Could not open file %file%', [
+                    '%file%' => $this->file->path()->__toString(),
+                ])
             );
         }
     }

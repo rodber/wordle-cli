@@ -1,0 +1,186 @@
+#!/usr/bin/env php
+<?php
+
+/*
+ * This file is part of Chevere.
+ *
+ * (c) Rodolfo Berrios <rodolfo@chevere.org>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
+declare(strict_types=1);
+
+use League\CLImate\CLImate;
+use Rodber\Wordle\Compare;
+use Rodber\Wordle\Word;
+use function Chevere\Filesystem\filePhpReturnForPath;
+
+require_once __DIR__ . '/vendor/autoload.php';
+
+$climate = new CLImate();
+$climate->clear();
+$climate->addArt(__DIR__ . '/app/banner');
+$climate->animation('intro')->speed(200)->enterFrom('top');
+
+$options = [
+    'en' => 'English',
+    'es' => 'Español',
+    'pt' => 'Português',
+];
+$input = $climate->radio('Language selection:', $options);
+$lang = $input->prompt();
+
+$climate->addArt(__DIR__ . "/app/lang/{$lang}/banner");
+
+$en = [
+    'options' => 'Game options',
+    'length' => 'Word length [3, 8] (default 5)',
+    'responses' => 'Responses [0, n] (default 6, no limit 0)',
+    'looking' => 'Looking for <invert> %length% </invert> char word',
+    'try' => 'Try',
+    'must' => 'Word must be %s char length',
+    'unknown' => 'Unknown word (not in wordlist)',
+    'welcome' => 'Welcome to Wordle CLI!',
+    'instructions' => 'You have to guess a word of a certain length.',
+    'exact_match' => 'Exact match',
+    'partial_match' => 'Partial (wrong position)',
+    'no_match' => 'No match',
+    'tries' => 'tries',
+];
+
+$es = [
+    'options' => 'Opciones del juego',
+    'length' => 'Largo de palabra [3, 8] (defecto 5)',
+    'responses' => 'Respuestas [0, n] (defecto 6, sin límite 0)',
+    'looking' => 'Buscando palabra de <invert> %length% </invert> caracteres',
+    'try' => 'Intento',
+    'must' => 'La palabra debe ser de %s caracteres',
+    'unknown' => 'Palabra desconocida (no está en el diccionario)',
+    'welcome' => 'Bienvenido a Wordle CLI!',
+    'instructions' => 'Tienes que adivinar una palabra de cierta longitud.',
+    'exact_match' => 'Coincidencia exacta',
+    'partial_match' => 'Parcial (posición incorrecta)',
+    'no_match' => 'Sin coincidencia',
+    'tries' => 'intentos',
+];
+
+$pt = [
+    'options' => 'Opções do jogo',
+    'length' => 'Comprimento da palavra [3, 8] (padrão 5)',
+    'responses' => 'Respostas [0, n] (padrão 6, sem limite 0)',
+    'looking' => 'Procurando palavra de <invert> %length% </invert> caracteres',
+    'try' => 'Tente',
+    'must' => 'A palavra deve ter %s caracteres',
+    'unknown' => 'Palavra desconhecida (não está no dicionário)',
+    'welcome' => 'Bem-vindo ao Wordle CLI!',
+    'instructions' => 'Você tem que adivinhar uma palavra de certo comprimento.',
+    'exact_match' => 'Correspondência exata',
+    'partial_match' => 'Parcial (posição errada)',
+    'no_match' => 'Sem correspondência',
+    'tries' => 'tentativas',
+];
+
+$LANG = $$lang;
+
+$climate->br()->out('👋 ' . $LANG['welcome'])->br();
+$climate->out($LANG['instructions'])->br();
+$climate->out('🟩 ' . $LANG['exact_match']);
+$climate->out('🟨 ' . $LANG['partial_match']);
+$climate->out('⬜ ' . $LANG['no_match'])->br();
+
+$options = range(3, 8);
+$climate->out('<green>' . $LANG['options'] . '</green>');
+$input = $climate->input('<green>* ' . $LANG['length'] . ':</green>');
+$input->defaultTo('5');
+$input->accept($options);
+$wordLength = intval($input->prompt());
+
+$input = $climate->input('<green>* ' . $LANG['responses'] .' :</green>');
+$input->defaultTo('6');
+$ansTries = intval($input->prompt());
+$attempts = $ansTries === 0
+    ? '∞'
+    : $ansTries;
+
+$wordListFile = filePhpReturnForPath(__DIR__ . "/app/lang/{$lang}/words/{$wordLength}.php");
+$wordList = $wordListFile->var();
+$randomWord = mb_strtoupper($wordList[rand(0, count($wordList))]);
+$word = new Word($randomWord);
+$climate->br()->out(
+    strtr(
+        '🔍 ' . $LANG['looking'] . ':',
+        [
+            '%length%' => $wordLength,
+        ]
+    )
+)->br();
+$emojiLines = [];
+$answers = [];
+$try = 0;
+do {
+    $input = $climate->input(
+        strtr('❯ '. $LANG['try'] .' %try/%attempts:', [
+            '%try' => strval($try + 1),
+            '%attempts' => $attempts,
+        ])
+    );
+    $ansTries = $input->prompt();
+    if (strlen($ansTries) === 0) {
+        $noMatch = true;
+        $climate->error(
+            sprintf($LANG['must'], $word->length())
+        );
+
+        continue;
+    }
+    $attemptUpper = mb_strtoupper($ansTries);
+    $attemptLower = mb_strtolower($ansTries);
+    $against = new Word($attemptUpper);
+    if ($against->length() !== $word->length()) {
+        $noMatch = true;
+        $climate->error(
+            sprintf($LANG['must'], $word->length())
+        );
+
+        continue;
+    }
+    if (! in_array($attemptLower, $wordList, true)) {
+        $noMatch = true;
+        $climate->error($LANG['unknown']);
+
+        continue;
+    }
+    $answers[] = $attemptUpper;
+    $compare = new Compare($word, $against);
+    $noMatch = ! $compare->match();
+    $explain = [];
+    $emoji = '';
+    foreach ($against->split() as $pos => $letter) {
+        $match = $compare->computed()[$pos][$letter];
+        $color = '' . match ($match) {
+            Word::CHAR_MATCH_EXACT => 'green',
+            Word::CHAR_MATCH_PARTIAL => 'light_yellow',
+            Word::CHAR_MATCH_NONE => 'dark_gray',
+        };
+        $explain[] = "<invert><{$color}> {$letter} </{$color}></invert>";
+        $emoji .= match ($match) {
+            Word::CHAR_MATCH_EXACT => '🟩',
+            Word::CHAR_MATCH_PARTIAL => '🟨',
+            Word::CHAR_MATCH_NONE => '⬜',
+        };
+    }
+    $emojiLines[] = $emoji;
+    $explain[] = ' <invert><green>(' . $compare->fraction() . ')</green></invert>';
+    $climate->out(implode('', $explain));
+    $try++;
+} while ($noMatch && ($attempts !== '∞' && $try < $attempts));
+$climate->animation($noMatch ? 'lose' : 'win')->enterFrom('bottom');
+$LANGdgame = strtr('%icon% GAME OVER (%tries% ' . $LANG['tries'] . ') 🔍 %word%', [
+    '%tries%' => $try,
+    '%icon%' => $noMatch ? '😭' : '🎉',
+    '%word%' => $randomWord,
+]);
+$climate->flank($LANGdgame, '*', 3);
+$climate->br()->out(implode("\n", $emojiLines));

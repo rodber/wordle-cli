@@ -25,6 +25,8 @@ final class Compare
 
     private string $percentFormat;
 
+    private string $fraction;
+
     public function __construct(
         private Word $word,
         private Word $against
@@ -42,11 +44,15 @@ final class Compare
             if ($match === Word::CHAR_MATCH_PARTIAL) {
                 $partial[$pos] = $letter;
             }
-            $this->computed[] = [$letter => $match];
+            $this->computed[] = [
+                $letter => $match,
+            ];
         }
         foreach ($partial as $pos => $letter) {
             if ($values[$letter] === 0) {
-                $this->computed[$pos] = [$letter => Word::CHAR_MATCH_NONE];
+                $this->computed[$pos] = [
+                    $letter => Word::CHAR_MATCH_NONE,
+                ];
             }
         }
         $this->match = $matches === $this->word->length();

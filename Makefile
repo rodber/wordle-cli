@@ -1,5 +1,5 @@
 run:
-	docker run -it --rm --init --name rodber-wordle-cli ghcr.io/rodber/wordle-cli ./play
+	docker run -it --rm --init --name rodber-wordle-cli ghcr.io/rodber/wordle-cli ./wordle-cli
 
 rm:
 	docker container rm rodber-wordle-cli -f

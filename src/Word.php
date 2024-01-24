@@ -30,8 +30,9 @@ final class Word implements Stringable
 
     private array $countValues;
 
-    public function __construct(private string $string)
-    {
+    public function __construct(
+        private string $string
+    ) {
         (new StrAssert($string))
             ->notEmpty()
             ->notCtypeSpace();
