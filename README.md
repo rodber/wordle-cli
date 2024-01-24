@@ -1,6 +1,6 @@
-# Rodber's WORDLE-CLI
+# Rodber's Wordle-CLI
 
-`🚧 Preview`
+<a href="https://github.com/rodber/wordle-cli/releases/latest"><img alt="Get it on macOS" src=".github/badge/macos.png" height="50" hspace="2"><img alt="Get it on Linux" src=".github/badge/linux.png" height="50" hspace="2"><img alt="Get it on Windows" src=".github/badge/windows.png" height="50" hspace="2"></a>
 
 https://user-images.githubusercontent.com/20590102/151889072-ff1ef963-e18c-4554-a5f6-edeed50343ec.mp4
 
@@ -9,6 +9,11 @@ This is a Wordle CLI remix game:
 * Pick language to answer (En, Pt, Es)
 * Choose word length (3, 8)
 * Determine number of allowed responses (default 6)
+
+## Run binary
+
+* Get the latest binary from the [releases page](https://github.com/rodber/wordle-cli/releases/)
+* Run `wordle-cli` from your terminal
 
 ## Run using Docker
 
