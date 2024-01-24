@@ -13,8 +13,8 @@ declare(strict_types=1);
 
 namespace Rodber\Wordle;
 
-use Chevere\Str\StrAssert;
 use Stringable;
+use function Chevere\Parameter\string;
 
 final class Word implements Stringable
 {
@@ -33,9 +33,7 @@ final class Word implements Stringable
     public function __construct(
         private string $string
     ) {
-        (new StrAssert($string))
-            ->notEmpty()
-            ->notCtypeSpace();
+        string('/^(?!\s*$).+/')($string);
         $this->length = mb_strlen($string);
         $this->split = mb_str_split($string, 1);
         $this->countValues = array_count_values($this->split);

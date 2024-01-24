@@ -14,9 +14,9 @@ declare(strict_types=1);
 namespace Rodber\Wordle;
 
 use Chevere\Filesystem\File;
-use Chevere\Filesystem\Interfaces\DirInterface;
+use Chevere\Filesystem\Interfaces\DirectoryInterface;
 use Chevere\Filesystem\Interfaces\FileInterface;
-use Chevere\Throwable\Exceptions\RuntimeException;
+use RuntimeException;
 use function Chevere\Message\message;
 use function Chevere\Writer\streamFor;
 
@@ -34,7 +34,7 @@ final class Wordlist
     }
 
     public function split(
-        DirInterface $dir,
+        DirectoryInterface $dir,
         int $min = 3,
         int $max = 8
     ): void {
@@ -73,7 +73,7 @@ final class Wordlist
         $this->fopen = fopen($this->file->path()->__toString(), 'r');
         if (! $this->fopen) {
             throw new RuntimeException(
-                message: message('Could not open file %file%', [
+                message('Could not open file %file%', [
                     '%file%' => $this->file->path()->__toString(),
                 ])
             );

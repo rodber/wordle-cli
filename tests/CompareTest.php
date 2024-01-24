@@ -13,7 +13,7 @@ declare(strict_types=1);
 
 namespace Rodber\Wordle\Tests;
 
-use Chevere\Throwable\Exceptions\LengthException;
+use LengthException;
 use PHPUnit\Framework\TestCase;
 use Rodber\Wordle\Compare;
 use Rodber\Wordle\Word;
@@ -28,10 +28,18 @@ final class CompareTest extends TestCase
         $compare = new Compare($word, $against);
         $this->assertSame(
             [
-                ['w' => Word::CHAR_MATCH_EXACT],
-                ['o' => Word::CHAR_MATCH_EXACT],
-                ['r' => Word::CHAR_MATCH_EXACT],
-                ['d' => Word::CHAR_MATCH_EXACT],
+                [
+                    'w' => Word::CHAR_MATCH_EXACT,
+                ],
+                [
+                    'o' => Word::CHAR_MATCH_EXACT,
+                ],
+                [
+                    'r' => Word::CHAR_MATCH_EXACT,
+                ],
+                [
+                    'd' => Word::CHAR_MATCH_EXACT,
+                ],
             ],
             $compare->computed()
         );
@@ -40,10 +48,18 @@ final class CompareTest extends TestCase
         $compare = new Compare($word, $against);
         $this->assertSame(
             [
-                ['d' => Word::CHAR_MATCH_PARTIAL],
-                ['r' => Word::CHAR_MATCH_PARTIAL],
-                ['o' => Word::CHAR_MATCH_PARTIAL],
-                ['w' => Word::CHAR_MATCH_PARTIAL],
+                [
+                    'd' => Word::CHAR_MATCH_PARTIAL,
+                ],
+                [
+                    'r' => Word::CHAR_MATCH_PARTIAL,
+                ],
+                [
+                    'o' => Word::CHAR_MATCH_PARTIAL,
+                ],
+                [
+                    'w' => Word::CHAR_MATCH_PARTIAL,
+                ],
             ],
             $compare->computed()
         );
@@ -58,10 +74,18 @@ final class CompareTest extends TestCase
         $compare = new Compare($word, $against);
         $this->assertSame(
             [
-                ['p' => Word::CHAR_MATCH_EXACT],
-                ['i' => Word::CHAR_MATCH_EXACT],
-                ['ñ' => Word::CHAR_MATCH_EXACT],
-                ['a' => Word::CHAR_MATCH_EXACT],
+                [
+                    'p' => Word::CHAR_MATCH_EXACT,
+                ],
+                [
+                    'i' => Word::CHAR_MATCH_EXACT,
+                ],
+                [
+                    'ñ' => Word::CHAR_MATCH_EXACT,
+                ],
+                [
+                    'a' => Word::CHAR_MATCH_EXACT,
+                ],
             ],
             $compare->computed()
         );
@@ -77,10 +101,18 @@ final class CompareTest extends TestCase
         $compare = new Compare($word, $against);
         $this->assertSame(
             [
-                ['w' => Word::CHAR_MATCH_EXACT],
-                ['d' => Word::CHAR_MATCH_NONE],
-                ['r' => Word::CHAR_MATCH_EXACT],
-                ['d' => Word::CHAR_MATCH_EXACT],
+                [
+                    'w' => Word::CHAR_MATCH_EXACT,
+                ],
+                [
+                    'd' => Word::CHAR_MATCH_NONE,
+                ],
+                [
+                    'r' => Word::CHAR_MATCH_EXACT,
+                ],
+                [
+                    'd' => Word::CHAR_MATCH_EXACT,
+                ],
             ],
             $compare->computed()
         );

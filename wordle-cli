@@ -105,7 +105,7 @@ $attempts = $ansTries === 0
     : $ansTries;
 
 $wordListFile = filePhpReturnForPath(__DIR__ . "/app/lang/{$lang}/words/{$wordLength}.php");
-$wordList = $wordListFile->var();
+$wordList = $wordListFile->cast()->array();
 $randomWord = mb_strtoupper($wordList[rand(0, count($wordList))]);
 $word = new Word($randomWord);
 $climate->br()->out(

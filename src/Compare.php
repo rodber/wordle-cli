@@ -13,7 +13,7 @@ declare(strict_types=1);
 
 namespace Rodber\Wordle;
 
-use Chevere\Throwable\Exceptions\LengthException;
+use LengthException;
 
 final class Compare
 {

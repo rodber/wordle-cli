@@ -1,13 +1,18 @@
-/.ecs export-ignore
-/.github export-ignore
-/.vscode export-ignore
-/tests export-ignore
 /.dockerignore export-ignore
+/.ecs export-ignore
 /.gitattributes export-ignore
+/.github export-ignore
 /.gitignore export-ignore
+/.vscode export-ignore
+/box.json.dist export-ignore
+/cat.sh export-ignore
 /docker-bake.hcl export-ignore
-/Dockerfile export-ignore
-/phpunit-report.xml export-ignore
+/infection.json.dist export-ignore
+/phpstan.neon export-ignore
+/phpunit-coverage.xml export-ignore
 /phpunit.xml export-ignore
+/sonar-project.properties export-ignore
+/tests export-ignore
+/Makefile export-ignore
 
 *.php diff=php

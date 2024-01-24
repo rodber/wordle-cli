@@ -14,17 +14,15 @@ declare(strict_types=1);
 
 use Rodber\Wordle\Wordlist;
 
-use function Chevere\Filesystem\dirForPath;
+use function Chevere\Filesystem\directoryForPath;
 use function Chevere\Filesystem\fileForPath;
-use function Chevere\Writer\streamFor;
 
 require_once __DIR__ . '/vendor/autoload.php';
 
 echo "👉 Build wordlists (3,8) for langs\n";
 foreach(['en', 'es', 'pt'] as $lang) {
     echo "* Processing... $lang";
-    (new Wordlist(fileForPath(__DIR__ . "/wordlist/$lang")))
-        ->split(
-            dirForPath(__DIR__ . "/app/lang/$lang/words")
-        );
-    }
+    $file = fileForPath(__DIR__ . "/wordlist/$lang");
+    $dir = directoryForPath(__DIR__ . "/app/lang/$lang/words");
+    (new Wordlist($file))->split($dir);
+}

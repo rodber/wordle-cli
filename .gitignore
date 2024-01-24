@@ -1,5 +1,11 @@
 .DS_Store
-/vendor/
-/build/
-.phpunit.cache
-composer.lock
+/.idea
+/.phpunit.cache
+/.scannerwork
+/vendor
+/composer.lock
+/bin
+/build
+/micro
+/wordle-cli.phar
+/Makefile
